@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Einfacher Timer</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+    body {
+      font-family: 'Poppins', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #fff;
+      text-align: center;
+      transition: background-color 0.3s, color 0.3s;
+      position: relative;
+    }
+
+    .icon-container {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-container span {
+      display: block;
+      width: 100%;
+      height: 4px;
+      background-color: #333;
+      transition: all 0.3s ease;
+      position: absolute;
+    }
+
+    .icon-container span:nth-child(1) {
+      transform: rotate(0deg);
+    }
+
+    .icon-container span:nth-child(2) {
+      transform: rotate(90deg);
+    }
+
+    .icon-container.open span:nth-child(1) {
+      transform: rotate(45deg);
+    }
+
+    .icon-container.open span:nth-child(2) {
+      transform: rotate(-45deg);
+    }
+
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .menu-content {
+      text-align: center;
+      font-size: 2em;
+      color: #333;
+    }
+
+    .menu-content a {
+      display: block;
+      margin: 20px 0;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .icon-container.open + .menu-overlay {
+      display: flex;
+    }
+
+    .dark-mode-icon {
+      cursor: pointer;
+      font-size: 1em;
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      color: #6c757d;
+      filter: grayscale(100%);
+    }
+
+    .dark-mode {
+      background-color: #333;
+      color: #fff;
+    }
+
+    .dark-mode .dark-mode-icon {
+      color: #f1c40f;
+    }
+
+    .dark-mode .icon-container span {
+      background-color: #fff;
+    }
+
+    .logo-container {
+      width: 20%;
+      margin-bottom: 20px;
+    }
+
+    .logo-container img {
+      width: 100%;
+      height: auto;
+    }
+
+    .content {
+      font-size: 2em;
+      margin: 20px;
+      color: #333;
+    }
+
+    .link {
+      font-size: 1em;
+      color: inherit;
+      text-decoration: none;
+      margin-top: 20px;
+      display: block;
+    }
+
+    .timer-container {
+      background: #FFFFFF;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      padding: 40px 20px;
+      text-align: center;
+      max-width: 300px;
+      width: 100%;
+      transition: background 0.3s, box-shadow 0.3s;
+      margin: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .input-field {
+      border: none;
+      border-bottom: 2px solid #1976D2;
+      outline: none;
+      font-size: 18px;
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      text-align: center;
+      margin-bottom: 20px;
+      transition: border-bottom-color 0.3s, background-color 0.3s;
+      color: black;
+      background-color: transparent;
+    }
+
+    .timer-display {
+      font-size: 48px;
+      margin: 20px 0;
+      color: black;
+      transition: color 0.3s;
+    }
+
+    .progress-bar-container {
+      margin-top: 20px;
+      background: #E0E0E0;
+      border-radius: 5px;
+      overflow: hidden;
+      transition: background 0.3s;
+      display: none; /* Initially hidden */
+    }
+
+    .progress-bar {
+      height: 10px;
+      background: #1976D2;
+      width: 0%;
+      transition: width 1s linear, background 0.3s;
+    }
+
+    .dark-mode .timer-container {
+      background: #212121;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .dark-mode .input-field {
+      border-bottom-color: #BB86FC;
+      color: white;
+      background-color: #212121;
+    }
+
+    .dark-mode .timer-display {
+      color: #BB86FC;
+    }
+
+    .dark-mode .progress-bar-container {
+      background: #616161;
+    }
+
+    .dark-mode .progress-bar {
+      background: #BB86FC;
+    }
+
+    .reset-button {
+      font-size: 20px;
+      color: #1976D2;
+      cursor: pointer;
+      margin-top: 20px;
+      display: none; /* Initially hidden */
+    }
+  </style>
+</head>
+<body>
+
+<nav class="icon-container" id="icon-container">
+  <span></span>
+  <span></span>
+</nav>
+
+<div class="menu-overlay" id="menu-overlay">
+  <div class="menu-content">
+    <a href="/">Home</a>
+    <a href="/rendite/index.html">Rendite</a>
+    <a href="/timer/index.html">Timer</a>
+    <a href="/plus/about.html">About</a>
+  </div>
+</div>
+
+<div class="timer-container">
+  <input type="text" id="timeInput" class="input-field" placeholder="Zeit (z.B. 10s, 1.5m, 1:30m, 2h)" autofocus>
+  <div id="timerDisplay" class="timer-display"></div>
+  <div class="progress-bar-container" id="progressBarContainer">
+    <div id="progressBar" class="progress-bar"></div>
+  </div>
+  <i id="resetButton" class="material-icons reset-button">replay</i>
+  <audio id="alarmSound" src="https://www.soundjay.com/button/sounds/beep-07.mp3" preload="auto"></audio>
+</div>
+
+<div class="dark-mode-icon" id="dark-mode-toggle">&#x2600;</div>
+
+<script>
+  const iconContainer = document.getElementById('icon-container');
+  const menuOverlay = document.getElementById('menu-overlay');
+  const darkModeToggle = document.getElementById('dark-mode-toggle');
+  const body = document.body;
+
+  iconContainer.addEventListener('click', () => {
+    iconContainer.classList.toggle('open');
+    menuOverlay.style.display = iconContainer.classList.contains('open') ? 'flex' : 'none';
+  });
+
+  darkModeToggle.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+  });
+
+  const timeInput = document.getElementById('timeInput');
+  const timerDisplay = document.getElementById('timerDisplay');
+  const progressBar = document.getElementById('progressBar');
+  const progressBarContainer = document.getElementById('progressBarContainer');
+  const resetButton = document.getElementById('resetButton');
+  const alarmSound = document.getElementById('alarmSound');
+
+  let timer;
+  let totalTime;
+  let remainingTime;
+  let unit;
+
+  timeInput.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      startTimer();
+    }
+  });
+
+  resetButton.addEventListener('click', resetTimer);
+
+  function startTimer() {
+    const { time, unit: timeUnit } = parseTimeInput(timeInput.value);
+    if (time === null || time <= 0) {
+      alert('Bitte geben Sie eine gültige Zeit im Format 10s, 1.5m, 1:30m oder 2h ein.');
+      return;
+    }
+
+    totalTime = time;
+    remainingTime = time;
+    unit = timeUnit;
+    timeInput.style.display = 'none';
+    resetButton.style.display = 'inline-block';
+    progressBarContainer.style.display = 'block';
+    updateTimerDisplay();
+    updateProgressBar();
+
+    timer = setInterval(() => {
+      remainingTime -= 1;
+      updateTimerDisplay();
+      updateProgressBar();
+
+      if (remainingTime <= 0) {
+        clearInterval(timer);
+        timerDisplay.textContent = 'Zeit abgelaufen!';
+        alarmSound.play();
+      }
+    }, 1000);
+  }
+
+  function parseTimeInput(input) {
+    let match = input.match(/^(\d+(\.\d+)?)(s|m|h)$/);
+    if (!match) {
+      match = input.match(/^(\d+):(\d{2})(s|m|h)?$/);
+      if (!match) return { time: null, unit: null };
+
+      const minutes = parseInt(match[1]);
+      const seconds = parseInt(match[2]);
+      const unit = match[3] || 's';
+
+      let totalSeconds = minutes * 60 + seconds;
+      switch (unit) {
+        case 'm': totalSeconds *= 1; break;
+        case 'h': totalSeconds *= 3600; break;
+      }
+      return { time: totalSeconds, unit: unit };
+    }
+
+    const value = parseFloat(match[1]);
+    const unit = match[3];
+
+    switch (unit) {
+      case 's': return { time: value, unit: 's' };
+      case 'm': return { time: value * 60, unit: 'm' };
+      case 'h': return { time: value * 3600, unit: 'h' };
+      default: return { time: null, unit: null };
+    }
+  }
+
+  function updateTimerDisplay() {
+    if (remainingTime < 0) remainingTime = 0;
+    switch (unit) {
+      case 's':
+        timerDisplay.textContent = `${remainingTime.toFixed(0).replace(/\.0$/, '')}s`;
+        break;
+      case 'm':
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = (remainingTime % 60).toFixed(0).replace(/\.0$/, '');
+        timerDisplay.textContent = `${minutes}:${seconds.padStart(2, '0')}m`;
+        break;
+      case 'h':
+        const hours = Math.floor(remainingTime / 3600);
+        const mins = Math.floor((remainingTime % 3600) / 60);
+        const secs = (remainingTime % 60).toFixed(0).replace(/\.0$/, '');
+        timerDisplay.textContent = `${hours}:${String(mins).padStart(2, '0')}:${secs.padStart(2, '0')}h`;
+        break;
+    }
+  }
+
+  function updateProgressBar() {
+    const progress = ((totalTime - remainingTime) / totalTime) * 100;
+    progressBar.style.width = progress + '%';
+  }
+
+  function resetTimer() {
+    clearInterval(timer);
+    timeInput.style.display = 'inline-block';
+    resetButton.style.display = 'none';
+    progressBarContainer.style.display = 'none';
+    timerDisplay.textContent = '';
+    progressBar.style.width = '0%';
+    timeInput.value = '';
+    timeInput.focus();
+  }
+</script>
+
+</body>
+</html>
