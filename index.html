@@ -345,7 +345,7 @@
     }
   }
 
-  function updateTimerDisplay() {
+function updateTimerDisplay() {
     if (remainingTime < 0) remainingTime = 0;
     let displayText = '';
     let titleText = '';
@@ -368,11 +368,13 @@
         break;
     }
     timerDisplay.textContent = displayText;
-    document.title = titleText;
 
+    // Berechne den Fortschritt und aktualisiere den Tab-Titel
     const progress = ((totalTime - remainingTime) / totalTime) * 10;
-    document.title = '█'.repeat(progress) + '░'.repeat(10 - progress) + ' ' + titleText;
-  }
+    const filled = '█'.repeat(progress);
+    const empty = '░'.repeat(10 - progress);
+    document.title = `${filled}${empty} ${titleText}`;
+}
 
   function updateProgressBar() {
     const progress = ((totalTime - remainingTime) / totalTime) * 100;
