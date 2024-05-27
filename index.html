@@ -277,6 +277,8 @@
   let totalTime;
   let remainingTime;
   let unit;
+  let endTime;
+  let timerPausedAt;
 
   timeInput.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
@@ -285,6 +287,27 @@
   });
 
   resetButton.addEventListener('click', resetTimer);
+
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+      // Der Tab ist im Hintergrund
+      timerPausedAt = Date.now();
+    } else {
+      // Der Tab ist wieder im Vordergrund
+      const now = Date.now();
+      const elapsed = Math.floor((now - timerPausedAt) / 1000);
+      remainingTime -= elapsed;
+      if (remainingTime <= 0) {
+        remainingTime = 0;
+        timerDisplay.textContent = 'Zeit abgelaufen!';
+        document.title = 'Zeit abgelaufen!';
+        alarmSound.play();
+      } else {
+        updateTimerDisplay();
+        updateProgressBar();
+      }
+    }
+  });
 
   function startTimer() {
     const { time, unit: timeUnit } = parseTimeInput(timeInput.value);
@@ -296,6 +319,7 @@
     totalTime = time;
     remainingTime = time;
     unit = timeUnit;
+    endTime = Date.now() + (remainingTime * 1000);
     timeInput.style.display = 'none';
     resetButton.style.display = 'inline-block';
     progressBarContainer.style.display = 'block';
@@ -303,7 +327,8 @@
     updateProgressBar();
 
     timer = setInterval(() => {
-      remainingTime -= 1;
+      const now = Date.now();
+      remainingTime = Math.floor((endTime - now) / 1000);
       updateTimerDisplay();
       updateProgressBar();
 
@@ -350,32 +375,32 @@
     let displayText = '';
     let titleText = '';
     switch (unit) {
-        case 's':
-            displayText = `${remainingTime.toFixed(0).replace(/\.0$/, '')}s`;
-            titleText = displayText;
-            break;
-        case 'm':
-            const minutes = Math.floor(remainingTime / 60);
-            const seconds = (remainingTime % 60).toFixed(0).replace(/\.0$/, '');
-            displayText = `${minutes}:${seconds.padStart(2, '0')}m`;
-            titleText = minutes > 0 ? `${minutes}m` : `${minutes}:${seconds.padStart(2, '0')}m`;
-            break;
-        case 'h':
-            const hours = Math.floor(remainingTime / 3600);
-            const mins = Math.floor((remainingTime % 3600) / 60);
-            const secs = (remainingTime % 60).toFixed(0).replace(/\.0$/, '');
-            displayText = `${hours}:${String(mins).padStart(2, '0')}:${secs.padStart(2, '0')}h`;
-            titleText = `${hours}:${String(mins).padStart(2, '0')}h`;
-            break;
+      case 's':
+        displayText = `${remainingTime.toFixed(0).replace(/\.0$/, '')}s`;
+        titleText = displayText;
+        break;
+      case 'm':
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = (remainingTime % 60).toFixed(0).replace(/\.0$/, '');
+        displayText = `${minutes}:${seconds.padStart(2, '0')}m`;
+        titleText = minutes > 0 ? `${minutes}m` : `${minutes}:${seconds.padStart(2, '0')}m`;
+        break;
+      case 'h':
+        const hours = Math.floor(remainingTime / 3600);
+        const mins = Math.floor((remainingTime % 3600) / 60);
+        const secs = (remainingTime % 60).toFixed(0).replace(/\.0$/, '');
+        displayText = secs === "0" ? `${hours}:${String(mins).padStart(2, '0')}h` : `${hours}:${String(mins).padStart(2, '0')}:${secs.padStart(2, '0')}h`;
+        titleText = mins > 0 ? `${hours}:${String(mins).padStart(2, '0')}h` : `${hours}:${String(mins).padStart(2, '0')}:${secs.padStart(2, '0')}h`;
+        break;
     }
     timerDisplay.textContent = displayText;
 
     // Berechne den Fortschritt und aktualisiere den Tab-Titel
-    const progress = Math.round(((totalTime - remainingTime) / totalTime) * 6);
+    const progress = Math.round(((totalTime - remainingTime) / totalTime) * 10);
     const filled = '█'.repeat(progress);
-    const empty = '▁'.repeat(6 - progress);
+    const empty = '▁'.repeat(10 - progress);
     document.title = `${filled}${empty} ${titleText}`;
-}
+  }
 
   function updateProgressBar() {
     const progress = ((totalTime - remainingTime) / totalTime) * 100;
