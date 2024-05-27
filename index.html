@@ -373,7 +373,7 @@
     // Berechne den Fortschritt und aktualisiere den Tab-Titel
     const progress = Math.round(((totalTime - remainingTime) / totalTime) * 10);
     const filled = '█'.repeat(progress);
-    const empty = '░'.repeat(10 - progress);
+    const empty = '▁'.repeat(10 - progress);
     document.title = `${filled}${empty} ${titleText}`;
 }
 
