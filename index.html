@@ -348,6 +348,7 @@
   function updateTimerDisplay() {
     if (remainingTime < 0) remainingTime = 0;
     let displayText = '';
+    let titleText = '';
     switch (unit) {
       case 's':
         displayText = `${remainingTime.toFixed(0).replace(/\.0$/, '')}s`;
@@ -356,16 +357,21 @@
         const minutes = Math.floor(remainingTime / 60);
         const seconds = (remainingTime % 60).toFixed(0).replace(/\.0$/, '');
         displayText = `${minutes}:${seconds.padStart(2, '0')}m`;
+        titleText = minutes > 0 ? `${minutes}m` : `${minutes}:${seconds.padStart(2, '0')}m`;
         break;
       case 'h':
         const hours = Math.floor(remainingTime / 3600);
         const mins = Math.floor((remainingTime % 3600) / 60);
         const secs = (remainingTime % 60).toFixed(0).replace(/\.0$/, '');
         displayText = `${hours}:${String(mins).padStart(2, '0')}:${secs.padStart(2, '0')}h`;
+        titleText = `${hours}:${String(mins).padStart(2, '0')}h`;
         break;
     }
     timerDisplay.textContent = displayText;
-    document.title = displayText;
+    document.title = titleText;
+
+    const progress = ((totalTime - remainingTime) / totalTime) * 10;
+    document.title = '█'.repeat(progress) + '░'.repeat(10 - progress) + ' ' + titleText;
   }
 
   function updateProgressBar() {
