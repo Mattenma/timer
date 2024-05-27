@@ -396,9 +396,9 @@
     timerDisplay.textContent = displayText;
 
     // Berechne den Fortschritt und aktualisiere den Tab-Titel
-    const progress = Math.round(((totalTime - remainingTime) / totalTime) * 10);
+    const progress = Math.round(((totalTime - remainingTime) / totalTime) * 6);
     const filled = '█'.repeat(progress);
-    const empty = '▁'.repeat(10 - progress);
+    const empty = '▁'.repeat(6 - progress);
     document.title = `${filled}${empty} ${titleText}`;
   }
 
