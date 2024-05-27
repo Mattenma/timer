@@ -310,6 +310,7 @@
       if (remainingTime <= 0) {
         clearInterval(timer);
         timerDisplay.textContent = 'Zeit abgelaufen!';
+        document.title = 'Zeit abgelaufen!';
         alarmSound.play();
       }
     }, 1000);
@@ -346,22 +347,25 @@
 
   function updateTimerDisplay() {
     if (remainingTime < 0) remainingTime = 0;
+    let displayText = '';
     switch (unit) {
       case 's':
-        timerDisplay.textContent = `${remainingTime.toFixed(0).replace(/\.0$/, '')}s`;
+        displayText = `${remainingTime.toFixed(0).replace(/\.0$/, '')}s`;
         break;
       case 'm':
         const minutes = Math.floor(remainingTime / 60);
         const seconds = (remainingTime % 60).toFixed(0).replace(/\.0$/, '');
-        timerDisplay.textContent = `${minutes}:${seconds.padStart(2, '0')}m`;
+        displayText = `${minutes}:${seconds.padStart(2, '0')}m`;
         break;
       case 'h':
         const hours = Math.floor(remainingTime / 3600);
         const mins = Math.floor((remainingTime % 3600) / 60);
         const secs = (remainingTime % 60).toFixed(0).replace(/\.0$/, '');
-        timerDisplay.textContent = `${hours}:${String(mins).padStart(2, '0')}:${secs.padStart(2, '0')}h`;
+        displayText = `${hours}:${String(mins).padStart(2, '0')}:${secs.padStart(2, '0')}h`;
         break;
     }
+    timerDisplay.textContent = displayText;
+    document.title = displayText;
   }
 
   function updateProgressBar() {
@@ -378,6 +382,7 @@
     progressBar.style.width = '0%';
     timeInput.value = '';
     timeInput.focus();
+    document.title = 'Timer';
   }
 </script>
 
