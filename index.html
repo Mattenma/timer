@@ -383,38 +383,24 @@
     }
   }
 
-  function updateTimerDisplay() {
+function updateTimerDisplay() {
     if (remainingTime < 0) remainingTime = 0;
     let displayText = '';
     let titleText = '';
-    switch (unit) {
-      case 's':
-        displayText = `${remainingTime.toFixed(0).replace(/\.0$/, '')}s`;
-        titleText = displayText;
-        break;
-      case 'm':
-        const minutes = Math.floor(remainingTime / 60);
-        const seconds = (remainingTime % 60).toFixed(0).replace(/\.0$/, '');
-        if (remainingTime >= 60) {
-          displayText = `${minutes}m`;
-          titleText = `${minutes}m`;
-        } else {
-          displayText = `${minutes}:${seconds.padStart(2, '0')}m`;
-          titleText = `${minutes}:${seconds.padStart(2, '0')}m`;
-        }
-        break;
-      case 'h':
+    if (remainingTime >= 3600) {
         const hours = Math.floor(remainingTime / 3600);
         const mins = Math.floor((remainingTime % 3600) / 60);
-        const secs = (remainingTime % 60).toFixed(0).replace(/\.0$/, '');
-        if (remainingTime >= 3600) {
-          displayText = `${hours}:${String(mins).padStart(2, '0')}h`;
-          titleText = `${hours}:${String(mins).padStart(2, '0')}h`;
-        } else {
-          displayText = `${hours}:${String(mins).padStart(2, '0')}:${secs.padStart(2, '0')}h`;
-          titleText = `${hours}:${String(mins).padStart(2, '0')}:${secs.padStart(2, '0')}h`;
-        }
-        break;
+        displayText = `${hours}:${String(mins).padStart(2, '0')}h`;
+        titleText = `${hours}:${String(mins).padStart(2, '0')}h`;
+    } else if (remainingTime >= 60) {
+        const minutes = Math.floor(remainingTime / 60);
+        displayText = `${minutes}m`;
+        titleText = `${minutes}m`;
+    } else {
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = (remainingTime % 60).toFixed(0).replace(/\.0$/, '');
+        displayText = `${minutes}:${seconds.padStart(2, '0')}m`;
+        titleText = `${minutes}:${seconds.padStart(2, '0')}m`;
     }
     timerDisplay.textContent = displayText;
 
@@ -422,8 +408,7 @@
     const filled = '█'.repeat(progress);
     const empty = '▁'.repeat(6 - progress);
     document.title = `${titleText} ${filled}${empty}`;
-  }
-
+}
   function updateProgressBar() {
     const progress = ((totalTime - remainingTime) / totalTime) * 100;
     progressBar.style.width = progress + '%';
