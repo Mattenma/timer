@@ -151,6 +151,7 @@
       text-align: center;
       max-width: 300px;
       width: 100%;
+      height: 300px;
       transition: background 0.3s, box-shadow 0.3s;
       margin: 20px;
       position: relative;
@@ -161,7 +162,7 @@
       border: none;
       border-bottom: 2px solid #1976D2;
       outline: none;
-      font-size: 48px;
+      font-size: 18px;
       width: 100%;
       padding: 10px;
       box-sizing: border-box;
@@ -219,7 +220,7 @@
     }
 
     .reset-button {
-      font-size: 48px;
+      font-size: 38px; /* 80% of 48px */
       color: #1976D2;
       cursor: pointer;
       margin-top: 20px;
@@ -248,7 +249,7 @@
 </div>
 
 <div class="timer-container">
-  <input type="text" id="timeInput" class="input-field" placeholder="Zeit (z.B. 6s, 1.5m, 2:10m, 1h)" autofocus>
+  <input type="text" id="timeInput" class="input-field" placeholder="6s, 1.5m, 2:10m, 1h" style="font-size: 18px;" autofocus>
   <div id="timerDisplay" class="timer-display"></div>
   <div class="progress-bar-container" id="progressBarContainer">
     <div id="progressBar" class="progress-bar"></div>
@@ -341,8 +342,8 @@
       if (remainingTime <= 0) {
         clearInterval(timer);
         remainingTime = 0;
-        timerDisplay.textContent = 'Zeit abgelaufen.';
-        document.title = 'Zeit abgelaufen.';
+        timerDisplay.textContent = 'Timer abgelaufen.';
+        document.title = 'Timer abgelaufen.';
         if (!alarmSound.played.length) {
           alarmSound.play();
         }
@@ -391,22 +392,24 @@
       case 'm':
         const minutes = Math.floor(remainingTime / 60);
         const seconds = (remainingTime % 60).toFixed(0).replace(/\.0$/, '');
-        displayText = `${minutes}:${seconds.padStart(2, '0')}m`;
-        titleText = `${minutes}:${seconds.padStart(2, '0')}m`;
         if (remainingTime >= 60) {
           displayText = `${minutes}m`;
           titleText = `${minutes}m`;
+        } else {
+          displayText = `${minutes}:${seconds.padStart(2, '0')}m`;
+          titleText = `${minutes}:${seconds.padStart(2, '0')}m`;
         }
         break;
       case 'h':
         const hours = Math.floor(remainingTime / 3600);
         const mins = Math.floor((remainingTime % 3600) / 60);
         const secs = (remainingTime % 60).toFixed(0).replace(/\.0$/, '');
-        displayText = secs === "0" ? `${hours}:${String(mins).padStart(2, '0')}h` : `${hours}:${String(mins).padStart(2, '0')}:${secs.padStart(2, '0')}h`;
-        titleText = `${hours}:${String(mins).padStart(2, '0')}h`;
         if (remainingTime >= 3600) {
           displayText = `${hours}:${String(mins).padStart(2, '0')}h`;
           titleText = `${hours}:${String(mins).padStart(2, '0')}h`;
+        } else {
+          displayText = `${hours}:${String(mins).padStart(2, '0')}:${secs.padStart(2, '0')}h`;
+          titleText = `${hours}:${String(mins).padStart(2, '0')}:${secs.padStart(2, '0')}h`;
         }
         break;
     }
