@@ -407,7 +407,7 @@
     const progress = Math.round(((totalTime - remainingTime) / totalTime) * 6);
     const filled = '█'.repeat(progress);
     const empty = '▁'.repeat(6 - progress);
-    document.title =  ${titleText}` `${filled}${empty};
+    document.title =  '${titleText} ${filled}${empty}';
   }
 
   function updateProgressBar() {
