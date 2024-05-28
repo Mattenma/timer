@@ -147,18 +147,14 @@
       background: #FFFFFF;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       border-radius: 8px;
-      padding: 40px 20px;
+      padding: 20px; /* Reduced padding */
       text-align: center;
       max-width: 300px;
       width: 100%;
-      height: 300px; /* Fix the height to prevent resizing */
       transition: background 0.3s, box-shadow 0.3s;
       margin: 20px;
       position: relative;
       z-index: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between; /* Evenly space the children */
     }
 
     .input-field {
@@ -170,7 +166,7 @@
       padding: 10px;
       box-sizing: border-box;
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 10px; /* Reduced margin */
       transition: border-bottom-color 0.3s, background-color 0.3s;
       color: black;
       background-color: transparent;
@@ -182,13 +178,13 @@
 
     .timer-display {
       font-size: 48px;
-      margin: 20px 0;
+      margin: 10px 0; /* Reduced margin */
       color: black;
       transition: color 0.3s;
     }
 
     .progress-bar-container {
-      margin-top: 20px;
+      margin: 10px 0; /* Reduced margin */
       background: #E0E0E0;
       border-radius: 5px;
       overflow: hidden;
@@ -231,6 +227,7 @@
       color: #1976D2;
       cursor: pointer;
       display: none; /* Initially hidden */
+      margin-top: 10px; /* Reduced margin */
     }
 
     .dark-mode .reset-button {
