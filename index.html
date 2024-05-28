@@ -387,6 +387,7 @@ function updateTimerDisplay() {
     if (remainingTime < 0) remainingTime = 0;
     let displayText = '';
     let titleText = '';
+
     if (remainingTime >= 3600) {
         const hours = Math.floor(remainingTime / 3600);
         const mins = Math.floor((remainingTime % 3600) / 60);
@@ -398,10 +399,21 @@ function updateTimerDisplay() {
         titleText = `${minutes}m`;
     } else {
         const minutes = Math.floor(remainingTime / 60);
-        const seconds = (remainingTime % 60).toFixed(0).replace(/\.0$/, '');
-        displayText = `${minutes}:${seconds.padStart(2, '0')}m`;
-        titleText = `${minutes}:${seconds.padStart(2, '0')}m`;
+        const seconds = Math.floor(remainingTime % 60);
+        displayText = `${minutes}:${seconds.toString().padStart(2, '0')}m`;
+        titleText = `${minutes}:${seconds.toString().padStart(2, '0')}m`;
     }
+
+    // Überprüfung auf NaN und Anzeige des Einstiegsscreens
+    if (isNaN(remainingTime) || remainingTime === 0) {
+        timeInput.style.display = 'inline-block'; // Zeige die Eingabeaufforderung
+        resetButton.style.display = 'none'; // Verstecke den Reset-Button
+        progressBarContainer.style.display = 'none'; // Verstecke den Fortschrittsbalken
+        timerDisplay.textContent = ''; // Leere den Timer-Anzeigetext
+        document.title = 'Timer'; // Setze den Tab-Titel auf den Standard
+        return; // Beende die Funktion hier
+    }
+
     timerDisplay.textContent = displayText;
 
     const progress = Math.round(((totalTime - remainingTime) / totalTime) * 6);
